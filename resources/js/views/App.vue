@@ -1,13 +1,17 @@
 <template>
     <div>
-        <h1>Work in progress!</h1>
+        <MyMain/>
     </div>
 </template>
 
 <script>
-export default {
-    name: 'App'
-}
+    import MyMain from '../components/MyMain.vue';
+    export default {
+        name: 'App',
+        components: {
+            MyMain
+        }
+    }
 </script>
 
 <style>
