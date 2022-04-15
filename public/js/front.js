@@ -1929,19 +1929,39 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'MyMain',
   data: function data() {
     return {
-      posts: []
+      posts: [],
+      currentPage: 1,
+      lastPage: null
     };
   },
-  created: function created() {
-    var _this = this;
+  methods: {
+    getPosts: function getPosts(apiPage) {
+      var _this = this;
 
-    axios.get('/api/posts').then(function (response) {
-      _this.posts = response.data.results;
-    });
+      axios.get("/api/posts", {
+        'params': {
+          'page': apiPage
+        }
+      }).then(function (response) {
+        _this.currentPage = response.data.results.current_page;
+        _this.posts = response.data.results.data;
+        _this.lastPage = response.data.results.last_page;
+      });
+    }
+  },
+  created: function created() {
+    this.getPosts(1);
   }
 });
 
@@ -2463,7 +2483,7 @@ var render = function () {
       "div",
       { staticClass: "row" },
       _vm._l(_vm.posts, function (post) {
-        return _c("div", { key: post.id, staticClass: "col-4 mt-5" }, [
+        return _c("div", { key: post.id, staticClass: "col-6 mt-5" }, [
           _c("div", { staticClass: "card" }, [
             _c("div", { staticClass: "card-body" }, [
               _c("h5", { staticClass: "card-title" }, [
@@ -2485,6 +2505,54 @@ var render = function () {
       }),
       0
     ),
+    _vm._v(" "),
+    _c("nav", { attrs: { "aria-label": "Page navigation example" } }, [
+      _c("ul", { staticClass: "pagination" }, [
+        _c(
+          "li",
+          {
+            staticClass: "page-item",
+            class: _vm.currentPage == 1 ? "disabled" : "",
+          },
+          [
+            _c(
+              "span",
+              {
+                staticClass: "page-link",
+                on: {
+                  click: function ($event) {
+                    return _vm.getPosts(_vm.currentPage - 1)
+                  },
+                },
+              },
+              [_vm._v("Prev")]
+            ),
+          ]
+        ),
+        _vm._v(" "),
+        _c(
+          "li",
+          {
+            staticClass: "page-item",
+            class: _vm.currentPage == _vm.lastPage ? "disabled" : "",
+          },
+          [
+            _c(
+              "span",
+              {
+                staticClass: "page-link",
+                on: {
+                  click: function ($event) {
+                    return _vm.getPosts(_vm.currentPage + 1)
+                  },
+                },
+              },
+              [_vm._v("Next")]
+            ),
+          ]
+        ),
+      ]),
+    ]),
   ])
 }
 var staticRenderFns = [
